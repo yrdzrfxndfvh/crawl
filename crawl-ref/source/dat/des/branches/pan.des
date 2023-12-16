@@ -62,7 +62,8 @@ function pan_lord_setup(_G, name)
         ['Gloorx Vloq'] = "skeleton w:400 / soul eater w:200 / " ..
                  "lorocyproca w:100 / executioner w:300 / " ..
                  "demonic crawler / shadow wraith / " ..
-                 "unseen horror / demonspawn black sun"
+                 "unseen horror / demonspawn black sun / " ..
+                 "demonspawn executioner rider w:250"
     }
 
     _G.set_random_mon_list(monsters[name])
