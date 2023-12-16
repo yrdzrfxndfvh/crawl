@@ -5791,6 +5791,19 @@ DUMMY(MONS_WALKING_TOME, ';', BROWN, "walking tome", TILE_ERROR) // XXX TODO
     {TILEP_MONS_DEMONSPAWN_BLACK_SUN}, TILE_ERROR
 },
 
+{   // evil spriggan riders
+    MONS_EXECUTIONER_RIDER, '6', LIGHTGREY, "demonspawn Executioner rider",
+    M_FIGHTER | M_SEE_INVIS,
+    MR_RES_ELEC | MR_RES_FIRE | MR_RES_COLD | MR_RES_POISON, // the mount
+    18, MONS_DEMONSPAWN, MONS_DEMONSPAWN, MH_DEMONIC, 140, // demonic for mount
+    { {AT_HIT, AF_PLAIN, 30}, {AT_HIT, AF_PLAIN, 20}, AT_NO_ATK, AT_NO_ATK },
+    18, 705,
+    10, 15, MST_EXECUTIONER, false, S_SHOUT,
+    I_HUMAN, HT_LAND, 20, DEFAULT_ENERGY,
+    MONUSE_WEAPONS_ARMOUR, SIZE_LARGE, MON_SHAPE_HUMANOID, // ??
+    {TILEP_MONS_EXECUTIONER_RIDER}, TILE_ERROR
+},
+
 // minor demons: imps, etc. ('5')
 {
     MONS_CRIMSON_IMP, '5', RED, "crimson imp",
