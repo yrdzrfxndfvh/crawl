@@ -869,6 +869,7 @@ bool mcache_monster::get_weapon_offset(tileidx_t mon_tile,
         *ofs_y = -10;
         break;
 
+    case TILEP_MONS_EXECUTIONER_RIDER:
     default:
         // This monster cannot be displayed with a weapon.
         return false;
@@ -1305,6 +1306,7 @@ bool mcache_monster::get_shield_offset(tileidx_t mon_tile,
         break;
 
     case TILEP_MONS_SPRIGGAN_RIDER: // shield covered, out of picture
+    case TILEP_MONS_EXECUTIONER_RIDER:
     default:
         // This monster cannot be displayed with a shield.
         return false;
