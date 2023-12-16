@@ -5724,6 +5724,51 @@ void monster::react_to_damage(const actor *oppressor, int damage,
             }
         }
     }
+        else if (type == MONS_EXECUTIONER_RIDER) // there is probably a better way to do this than copying entire code chunks
+    {
+        if (hit_points + damage > max_hit_points / 2)
+            damage = max_hit_points / 2 - hit_points;
+        if (damage > 0 && x_chance_in_y(damage, damage + hit_points))
+        {
+            bool exe_died = coinflip();
+            int old_hp                = hit_points;
+            auto old_flags            = flags;
+            mon_enchant_list old_ench = enchantments;
+            FixedBitVector<NUM_ENCHANTMENTS> old_ench_cache = ench_cache;
+            int8_t old_ench_countdown = ench_countdown;
+            string old_name = mname;
+
+            if (!exe_died)
+                monster_drop_things(this, mons_aligned(oppressor, &you));
+
+            type = exe_died ? MONS_DEMONSPAWN_WARMONGER : MONS_EXECUTIONER;
+            define_monster(*this);
+            hit_points = min(old_hp, hit_points);
+            flags          = old_flags;
+            enchantments   = old_ench;
+            ench_cache     = old_ench_cache;
+            ench_countdown = old_ench_countdown;
+            if (!old_name.empty())
+                mname = old_name;
+
+            mounted_kill(this, exe_died ? MONS_EXECUTIONER : MONS_DEMONSPAWN_WARMONGER,
+                !oppressor ? KILL_MISC
+                : (oppressor->is_player())
+                  ? KILL_YOU : KILL_MON,
+                (oppressor && oppressor->is_monster())
+                  ? oppressor->mindex() : NON_MONSTER);
+
+            if (!exe_died)
+                mname.clear();
+
+            else if (exe_died && observable())
+            {
+                mprf("%s falls from %s now dead mount.",
+                     name(DESC_THE).c_str(),
+                     pronoun(PRONOUN_POSSESSIVE).c_str());
+            }
+        }
+    }
     else if (type == MONS_STARCURSED_MASS)
         starcursed_merge_fineff::schedule(this);
     else if (type == MONS_RAKSHASA && !has_ench(ENCH_PHANTOM_MIRROR)
