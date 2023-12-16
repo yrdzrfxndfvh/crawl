@@ -922,6 +922,20 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { WPN_LAJATANG,           1 }, },
            {}, {}, 1,
         } },
+        { MONS_EXECUTIONER_RIDER, {
+            { { WPN_DEMON_BLADE,        10 },
+              { WPN_DEMON_WHIP,         12 },
+              { WPN_DEMON_TRIDENT,      15 },
+              { WPN_BATTLEAXE,          3 },
+              { WPN_GREAT_SWORD,        3 },
+              { WPN_DOUBLE_SWORD,       5 },
+              { WPN_DIRE_FLAIL,         3 },
+              { WPN_GREAT_MACE,         3 },
+              { WPN_GLAIVE,             3 },
+              { WPN_BARDICHE,           2 },
+              { WPN_LAJATANG,           1 }, },
+           {}, {}, 1,
+        } },
         { MONS_GARGOYLE,                { GARGOYLE_WEAPONS } },
         { MONS_MOLTEN_GARGOYLE,         { GARGOYLE_WEAPONS } },
         { MONS_WAR_GARGOYLE, {
@@ -1021,6 +1035,12 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { WPN_ARBALEST,                   9 },
               { WPN_TRIPLE_CROSSBOW,            1 },
               { NUM_WEAPONS,                    40 }, }, // 1/3 odds of weap
+            {}, {}, 1,
+        } },
+        { MONS_EXECUTIONER_RIDER, {
+            { { WPN_LONGBOW,                    10 },
+              { WPN_ARBALEST,                   10 },
+              { NUM_WEAPONS,                    40 }, },
             {}, {}, 1,
         } },
     };
@@ -1738,6 +1758,7 @@ static void _give_shield(monster* mon, int level)
         }
         break;
 
+    case MONS_EXECUTIONER_RIDER:
     case MONS_DEMONSPAWN_WARMONGER:
         make_item_for_monster(mon, OBJ_ARMOUR,
                               random_choose(ARM_TOWER_SHIELD, ARM_KITE_SHIELD),
@@ -2125,6 +2146,7 @@ int make_mons_armour(monster_type type, int level)
                                                 2, ARM_PLATE_ARMOUR);
         break;
 
+    case MONS_EXECUTIONER_RIDER:
     case MONS_DEMONSPAWN_WARMONGER:
         if (coinflip())
             level = ISPEC_GOOD_ITEM;
