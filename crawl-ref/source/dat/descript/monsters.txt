@@ -1096,6 +1096,11 @@ A half-mortal, half-demonic creature, oozing with dark energies. It twists
 space around itself, and can corrupt weapons, armour and even the very flesh of
 its opponents.
 %%%%
+demonspawn Executioner rider
+
+A demonspawn that commands a powerful Executioner, using it to plow through
+opponents with blinding speed.
+%%%%
 demonspawn warmonger
 
 A half-mortal, half-demonic creature, now more beast than whatever species it
