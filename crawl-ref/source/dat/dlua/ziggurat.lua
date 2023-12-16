@@ -463,13 +463,13 @@ local pan_critter_fn = zig_monster_fn(
          "place:Pan w:" .. math.max(10, 100 - you.zigs_completed() * 4) .. " / " ..
          "greater demon w:90 / demonspawn black sun / " ..
          "demonspawn blood saint / demonspawn corrupter / " ..
-         "demonspawn warmonger")
+         "demonspawn warmonger / demonspawn executioner rider w:5")
 
 local function mons_panlord_gen(x, y, nth)
   if nth == 1 then
     dgn.set_random_mon_list("place:Pan w:100 / greater demon w:90 / " ..
          "demonspawn black sun / demonspawn blood saint / " ..
-         "demonspawn corrupter / demonspawn warmonger")
+         "demonspawn corrupter / demonspawn warmonger / demonspawn executioner rider w:5")
     return pan_lord_fn(x, y)
   else
     return pan_critter_fn(x, y)
