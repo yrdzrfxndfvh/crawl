@@ -73,7 +73,8 @@ void init_pandemonium()
                   2, MONS_DEMONSPAWN_BLOOD_SAINT,
                   2, MONS_DEMONSPAWN_WARMONGER,
                   2, MONS_DEMONSPAWN_CORRUPTER,
-                  2, MONS_DEMONSPAWN_BLACK_SUN);
+                  2, MONS_DEMONSPAWN_BLACK_SUN,
+                  2, MONS_EXECUTIONER_RIDER);
         }
     }
 
