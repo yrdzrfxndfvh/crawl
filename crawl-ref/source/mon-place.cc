@@ -2242,6 +2242,16 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_OGRE, 1},
                                   {MONS_TROLL, 1},
                                   {MONS_ORC_SORCERER, 1}}}},
+
+    { BAND_LATE_ROKA,           {{{MONS_ORC_PRIEST, 1}},
+
+                                 {{MONS_ORC_KNIGHT, 1}},
+
+                                 {{MONS_ORC_PRIEST, 2},
+                                  {MONS_ORC_KNIGHT, 3},
+                                  {MONS_ORC_SORCERER, 3},
+                                  {MONS_ORC_HIGH_PRIEST, 4}}}},
+
     { BAND_OGRE_MAGE,           {{{MONS_TWO_HEADED_OGRE, 2},
                                   {MONS_OGRE, 1}}}},
     { BAND_OGRE_MAGE_EXTERN,    {{{MONS_OGRE_MAGE, 1}},
@@ -2447,16 +2457,16 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_DEMONSPAWN_WARMONGER, 1},
                                   {MONS_DEMONSPAWN_CORRUPTER, 1},
                                   {MONS_DEMONSPAWN_BLACK_SUN, 1}}}},
+    // for Grunn
+    { BAND_DOOM_HOUNDS,         {{{MONS_DOOM_HOUND, 1}}}},
+    // for Norris
+    { BAND_SKYSHARKS,           {{{MONS_SKYSHARK, 1}}}},
 
     { BAND_EXECUTIONER_RIDER,     {{MONS_DEMONSPAWN_BLOOD_SAINT, 1},
                                   {MONS_DEMONSPAWN_WARMONGER, 1},
                                   {MONS_DEMONSPAWN_CORRUPTER, 1},
                                   {MONS_DEMONSPAWN_BLACK_SUN, 1},
                                   {MONS_EXECUTIONER_RIDER, 4}}},
-    // for Grunn
-    { BAND_DOOM_HOUNDS,         {{{MONS_DOOM_HOUND, 1}}}},
-    // for Norris
-    { BAND_SKYSHARKS,           {{{MONS_SKYSHARK, 1}}}},
 };
 
 /**
