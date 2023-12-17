@@ -1957,7 +1957,6 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_NORRIS,           { {}, {{ BAND_SKYSHARKS, {2, 5}, true }}}},
     { MONS_UFETUBUS,         { {}, {{ BAND_UFETUBI, {1, 2} }}}},
     { MONS_KOBOLD_BLASTMINER, { {}, {{ BAND_BLASTMINER, {0, 2} }}}},
-    { MONS_EXECUTIONER_RIDER, { {}, {{ BAND_EXECUTIONER_RIDER, {0, 3} }}}},
 
     // special-cased band-sizes
     { MONS_SPRIGGAN_DRUID,  { {3}, {{ BAND_SPRIGGAN_DRUID, {0, 1}, true }}}},
@@ -2452,12 +2451,6 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_DOOM_HOUNDS,         {{{MONS_DOOM_HOUND, 1}}}},
     // for Norris
     { BAND_SKYSHARKS,           {{{MONS_SKYSHARK, 1}}}},
-
-    { BAND_EXECUTIONER_RIDER,     {{MONS_DEMONSPAWN_BLOOD_SAINT, 1},
-                                  {MONS_DEMONSPAWN_WARMONGER, 1},
-                                  {MONS_DEMONSPAWN_CORRUPTER, 1},
-                                  {MONS_DEMONSPAWN_BLACK_SUN, 1},
-                                  {MONS_EXECUTIONER_RIDER, 4}}},
 };
 
 /**
