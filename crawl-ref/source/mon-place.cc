@@ -2243,15 +2243,6 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_TROLL, 1},
                                   {MONS_ORC_SORCERER, 1}}}},
 
-    { BAND_LATE_ROKA,           {{{MONS_ORC_PRIEST, 1}},
-
-                                 {{MONS_ORC_KNIGHT, 1}},
-
-                                 {{MONS_ORC_PRIEST, 2},
-                                  {MONS_ORC_KNIGHT, 3},
-                                  {MONS_ORC_SORCERER, 3},
-                                  {MONS_ORC_HIGH_PRIEST, 4}}}},
-
     { BAND_OGRE_MAGE,           {{{MONS_TWO_HEADED_OGRE, 2},
                                   {MONS_OGRE, 1}}}},
     { BAND_OGRE_MAGE_EXTERN,    {{{MONS_OGRE_MAGE, 1}},
