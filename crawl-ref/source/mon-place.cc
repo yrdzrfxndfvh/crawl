@@ -2454,7 +2454,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                  {{MONS_DEMONSPAWN_BLOOD_SAINT, 1},
                                   {MONS_DEMONSPAWN_WARMONGER, 1},
                                   {MONS_DEMONSPAWN_CORRUPTER, 1},
-                                  {MONS_DEMONSPAWN_BLACK_SUN, 1}
+                                  {MONS_DEMONSPAWN_BLACK_SUN, 1},
                                   {MONS_EXECUTIONER_RIDER, 5}}}},
     // for Grunn
     { BAND_DOOM_HOUNDS,         {{{MONS_DOOM_HOUND, 1}}}},
