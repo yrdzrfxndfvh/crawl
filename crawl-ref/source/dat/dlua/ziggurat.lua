@@ -64,7 +64,8 @@ function ziggurat_build_level(e)
 
   -- Deeper levels can have all monsters awake.
   -- Does never happen at depths 1-4; does always happen at depths 25-27.
-  local generate_awake = you.depth() > 4 + crawl.random2(21)
+  -- Completing ziggurats makes this more frequent and earlier
+  local generate_awake = you.depth() + 4 * you.zigs_completed() > 4 + crawl.random2(21)
   zig().monster_hook = generate_awake and global_function("ziggurat_awaken_all")
 
   if builder then
@@ -169,7 +170,15 @@ local function monster_creator_fn(arg)
   elseif atyp == "table" then
     if not arg.cond or arg.cond() then
       local spec = arg.spec or arg.specfn()
-      return util.cathash(monster_creator_fn(spec), arg)
+      local ws = util.cathash(monster_creator_fn(spec), arg)
+        if not ws.weight then
+          ws.weight = 10
+        end
+        if ws.scale then
+          ws.weight = ws.weight + you.zigs_completed() * ws.scale
+          ws.scale = nil
+        end
+      return ws
     end
   elseif atyp == "function" then
     return { fn = arg }
@@ -187,7 +196,7 @@ end
 local function mset_if(condition, ...)
   mset(table.unpack(util.map(util.curry(spec_if, condition), { ... })))
 end
-
+	
 -- Monster sets, in order:
 -- Lair, Snake, Swamp, Shoals, Spider, Slime,
 -- Orc, Elf, Vaults, Crypt, Tomb,
@@ -197,6 +206,7 @@ end
 -- Pan, Lair Roulette, Vestibule / all Hells
 -- By using spec_fn to wrap monster-spec functions, monster weights
 -- are adjusted per-set, sometimes scaling by depth and always by zig completion.
+-- Set weights can also scale with zig completion.
 
 mset(with_props(spec_fn(function ()
   local d = math.max(24, math.floor(150 - you.depth() / 4 - you.zigs_completed() * 12))
@@ -228,14 +238,14 @@ mset(spec_fn(function ()
          "golden dragon w:" .. g
 end))
 
-mset(with_props(spec_fn(function ()
+mset(spec_fn(function ()
   local d = math.max(24, math.floor(120 - you.depth() / 4 - you.zigs_completed() * 12))
   local e = 10 + you.zigs_completed() * 12
   return "place:Shoals:$ w:" .. d .. " / merfolk impaler w:5 / " ..
          "merfolk javelineer / merfolk aquamancer / " ..
          "sphinx marauder / formless jellyfish / " ..
          "water nymph w:" .. e
-end), { weight = 5 }))
+end))
 
 mset(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 12
@@ -246,13 +256,13 @@ mset(spec_fn(function ()
          "ghost moth w:" .. e .. " / moth of wrath w:" .. f
 end))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = 5 + 5 * (you.zigs_completed() * 3)
   local e = math.min(20, you.zigs_completed() + 4)
   return "place:Slime:$ w:1500 / glass eye w:" .. d .. " / " ..
          "star jelly w:" .. d .. " / void ooze w:" .. d .. " / " ..
          e .. "-headed slymdra w:" .. d * 3 .. " / acid blob w:" .. d * 9
-end))
+end), { scale = 1 }))
 
 mset(spec_fn(function ()
   local d = math.max(2, 380 - 20 * you.depth() - you.zigs_completed() * 6)
@@ -280,7 +290,7 @@ mset(spec_fn(function ()
          "ancient lich w:" .. e / 3 .. " / dread lich w:" .. e / 3
 end))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 3
   local e = 10 + you.zigs_completed() * 6
   local f = 10 + you.zigs_completed() * 9
@@ -288,25 +298,25 @@ mset(spec_fn(function ()
          "ancient champion w:" .. d .. " / cognitogaunt w:" .. d .. " / " ..
          "curse skull w:" .. e .. " / ancient lich w:" .. e .. " / " ..
          "revenant soulmonger w:" .. f .. " / dread lich w:" .. f
-end))
+end), { scale = 1 }))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = math.max(100, 760 - you.zigs_completed() * 10)
   local e = you.zigs_completed() * 3
   local f = 10 + you.zigs_completed() * 5
   local g = 20 + you.depth() * 4 + you.zigs_completed() * 8
   return "place:Tomb:$ 9 w:" .. d .. " / mummy priest w:" .. e .. " / " ..
          "bennu w:" .. f .. " / royal mummy w:" .. g
-end))
+end), { scale = 2 }))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 60
   local e = 10 + you.zigs_completed() * you.zigs_completed() * 2
   return "place:Abyss:$ w:1910 / demonspawn corrupter w:" .. d .. " / " ..
          "starcursed mass w:" .. d .. " / wretched star w:" .. d .. " / " ..
          "bone dragon w:" .. d / 2 .. " / wyrmhole w:" .. d / 2 .. " / " ..
          "daeva w:" .. d .. " / " .. "silent spectre w:" .. e
-end))
+end), { scale = 2 }))
 
 mset(with_props(spec_fn(function ()
   local d = math.max(10, 455 - you.zigs_completed() * 9)
@@ -314,7 +324,7 @@ mset(with_props(spec_fn(function ()
   local f = 10 + you.zigs_completed() * 15
   return "place:Geh:$ w:" .. d .. " / hellion w:" .. e .. " / " ..
          "oni incarcerator w:" .. e .. " / brimstone fiend w:" .. f
-end), { weight = 5 }))
+end), { weight = 5, scale = 2 }))
 
 mset(with_props(spec_fn(function ()
   local d = math.max(10, 455 - you.zigs_completed() * 9)
@@ -330,7 +340,7 @@ mset(with_props(spec_fn(function ()
   local f = 10 + you.zigs_completed() * you.zigs_completed() * 10
   return "place:Dis:$ w:" .. d .. " / quicksilver elemental w:" .. e .. " / " ..
          "iron giant w:" .. e .. " / hell sentinel w:" .. f
-end), { weight = 5 }))
+end), { weight = 5, scale = 3 }))
 
 mset(with_props(spec_fn(function ()
   local d = math.max(20, 1840 - you.zigs_completed() * 36)
@@ -340,7 +350,7 @@ mset(with_props(spec_fn(function ()
   return "place:Tar:$ w:" .. d .. " / curse toe w:" .. e .. " / " ..
          "oblivion hound w:" .. e .. " / tzitzimitl w:" .. f .. " / " ..
          "silent spectre w:" .. g
-end), { weight = 5 }))
+end), { weight = 5, scale = 2 }))
 
 mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 7
@@ -348,7 +358,7 @@ mset(with_props(spec_fn(function ()
   return "efreet / fire crab / hell knight / will-o-the-wisp / " ..
          "salamander tyrant w:" .. d .. " / balrug w:" .. d .. " / " ..
          "red draconian scorcher w:" .. d .. " / orb of fire w:" .. e
-end), { weight = 2 }))
+end), { weight = 2, scale = 2 }))
 
 mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 6
@@ -360,7 +370,7 @@ mset(with_props(spec_fn(function ()
          "walking frostbound tome w:" .. d .. " / frost giant w:" .. d .. " / " ..
          "blizzard demon w:" .. d .. " / white draconian knight w:" .. e .. " / " ..
          "shard shrike w:" .. e .. " / orb of winter w:" .. f
-end), { weight = 2 }))
+end), { weight = 2, scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 5
@@ -371,7 +381,7 @@ mset(with_props(spec_fn(function ()
          "ironbound thunderhulk w:" .. d .. " / chonchon w:" .. d - 5 .. " / " ..
          "spriggan air mage w:" .. e .. " / storm dragon w:" .. e .. " / " ..
          "electric golem w:" .. e .. " / titan w:" .. f
-end), { weight = 2 }))
+end), { weight = 2, scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = 20 + you.zigs_completed() * 5
@@ -384,7 +394,7 @@ mset(with_props(spec_fn(function ()
          "walking crystal tome w:" .. d .. " / walking earthen tome w:" .. d - 10 .. " / " ..
          "crystal guardian w:" .. e .. " / undying armoury w:" .. e .. " / " ..
          "iron giant w:" .. f .. " / hell sentinel w:" .. f
-end), { weight = 2 }))
+end), { weight = 2, scale = 3 }))
 
 mset(with_props(spec_fn(function ()
   local d = 10 + you.zigs_completed() * 5
@@ -395,7 +405,7 @@ mset(with_props(spec_fn(function ()
          "yellow draconian annihilator w:" .. d .. " / " ..
          "caustic shrike w:" .. d .. " / acid blob w:" .. d + 5 .. " / " ..
          e .. "-headed slymdra w:" .. -5 + d * 3 .. " / orb of entropy w:" .. f
-end), { weight = 2 }))
+end), { weight = 2, scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = math.max(2, math.floor((32 - you.depth()) / 5))
@@ -410,7 +420,7 @@ mset(with_props(spec_fn(function ()
          "demonspawn soul scholar w:4 / curse skull w:4 / curse toe w:2 / " ..
          "halazid warlock w:" .. g .. " / player ghost w:" .. g .. " / " ..
          "orb of entropy w:" .. h
-end), { weight = 2 }))
+end), { weight = 2, scale = 3 }))
 
 mset(with_props(spec_fn(function ()
   local d = 30 + you.zigs_completed() * 6
@@ -421,9 +431,9 @@ mset(with_props(spec_fn(function ()
   end
   return "ophan w:30 / apis w:30 / cherub w:30 / angel w:30 / fravashi w:30 / " ..
          "daeva w:" .. d .. " / pearl dragon w:" .. d .. " / seraph w:" .. e
-end), { weight = 2 }))
+end), { weight = 2, scale = 3 }))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = math.max(2, math.floor((32 - you.depth()) / 5))
   local e = math.min(8, math.floor((you.depth()) / 5) + 4)
   local f = math.max(1, you.depth() + you.zigs_completed() * 2 - 4)
@@ -435,7 +445,7 @@ mset(spec_fn(function ()
          "glowing shapeshifter w:" .. e / 3 .. " / " ..
          "protean progenitor w:" .. e .. " / " ..
          "pandemonium lord w:" .. f
-end))
+end), { scale = 3 }))
 
 mset(with_props(spec_fn(function ()
   local d = 20 + you.zigs_completed() * 9
@@ -446,7 +456,7 @@ mset(with_props(spec_fn(function ()
          "frost giant w:" .. d .. " / titan w:" .. f .. " / " ..
          "juggernaut w:" .. e .. " / iron giant w:" .. e .. " / " ..
          "protean progenitor w:" .. d
-end), { weight = 2 }))
+end), { weight = 2, scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = 20 + you.zigs_completed() * 6
@@ -460,13 +470,13 @@ mset(with_props(spec_fn(function ()
          "wyrmhole w:" .. e
 end), { weight = 2 }))
 
-mset(spec_fn(function ()
+mset(with_props(spec_fn(function ()
   local d = 41 - you.depth()
   local e = 40 + you.zigs_completed() * 3
   local f = you.zigs_completed() * you.zigs_completed() * 4
   return "base draconian w:" .. d .. " / nonbase draconian w:" .. e .. " / " ..
          "draconian stormcaller w:" .. f .. " / draconian scorcher w:" .. f
-end))
+end), { scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = 20 + you.zigs_completed() * 6
@@ -492,7 +502,7 @@ mset(with_props(spec_fn(function ()
          "ancient lich w:" .. d - 5 .. " / " ..
          "demonspawn blood saint w:" .. d .. " / " ..
          "draconian annihilator w:" .. e
-end), { weight = 2 }))
+end), { weight = 2, scale = 1 }))
 
 mset(with_props(spec_fn(function ()
   local d = math.max(2, 20 - you.zigs_completed() * 2)
@@ -527,7 +537,7 @@ local function mons_panlord_gen(x, y, nth)
   end
 end
 
-mset(mons_panlord_gen)
+mset(with_props(mons_panlord_gen, { scale = 2 }))
 
 mset_if(depth_ge(14), with_props(spec_fn(function ()
   local d = math.max(2, math.floor(14 - you.zigs_completed() * 2))
@@ -551,7 +561,7 @@ mset_if(depth_ge(14), with_props(spec_fn(function ()
          "hellion w:5 / tormentor w:5 / greater demon w:" .. f .. " / " ..
          "nargun w:" .. g .. " / quicksilver elemental w:" .. g .. " / " ..
          "searing wretch w:" .. g .. " / silent spectre w:" .. g
-end), { weight = 2 }))
+end), { weight = 2, scale = 3 }))
 
 function ziggurat_monster_creators()
   return util.map(monster_creator_fn, mons_populations)
